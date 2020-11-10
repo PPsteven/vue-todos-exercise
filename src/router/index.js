@@ -1,22 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-
+import layouts from '@/components/layouts'; 
+import todo from '@/components/todo';
+// webpack 的 alias， @ 代表的是 src 文件夹
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/',  // 根路由
     name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: layouts, 
+    children: [{
+      path: '/todo/:id', 
+      name: 'todo', 
+      component: todo // 子组件
+    }]
   }
 ]
 
