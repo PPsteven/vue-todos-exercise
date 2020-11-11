@@ -64,23 +64,50 @@
 export default {
   data() {
     return {
-      todo: {
-        title: '星期一', // 标题
-        count: 12, // 数量
-        locked: false // 是否绑定
-      },
+      todo: {},
       items: [  // 代办单项列表
       ],
       text: '', // 用户输入单项项绑定的输入
       isUpdate: false // 新增修改状态
     };
   },
+  created() {
+    this.init();
+  },
+  watch: {
+     '$route.params.id'() {
+       // 监听$route.params.id的变化，如果这个id即代表用户点击了其他的待办项需要重新请求数据。
+       this.init();
+     }
+  },
   methods: {
-    init() {}, // 初始化
+    init() { // 初始化
+      const ID = this.$route.params.id;
+      let { id, title, count, isDelete, locked } = this.$store.getters.getTodoId(ID);
+      this.todo = {
+          id: id,
+          title: title,
+          count: count,
+          locked: locked,
+          isDelete: isDelete
+      }
+    }, 
+    updateTodo(){ // 更新 todo 菜单
+      this.$store.commit('UPDATETODE', this.todo);
+    },
     onAdd() {}, // 添加 TODO项
-    updateTitle() {}, // 更新 菜单名称
-    onDelete() {}, // 删除 TODO 菜单
-    onlock() {} // 锁定 TODO 菜单
+    updateTitle() { // 更新 菜单名称
+      this.updateTodo();
+      this.isUpdate = false;
+    }, 
+    onDelete() {  // 删除 TODO 菜单
+      this.todo.isDelete = true;
+      this.updateTodo();
+    },
+    onlock() { // 锁定 TODO 菜单
+      this.todo.locked = !this.todo.locked;
+      this.updateTodo();
+    } 
   }
 };
 </script>
